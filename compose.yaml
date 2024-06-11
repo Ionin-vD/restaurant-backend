@@ -1,9 +1,9 @@
 services:
   postgres:
-    image: 'postgres:latest'
+    image: "postgres:latest"
     environment:
-      - 'POSTGRES_DB=demo_backend_db'
-      - 'POSTGRES_PASSWORD=admin'
-      - 'POSTGRES_USER=postgres'
+      - "POSTGRES_DB=rest_backend_db"
+      - "POSTGRES_PASSWORD=admin"
+      - "POSTGRES_USER=postgres"
     ports:
-      - '5432'
+      - "5432"

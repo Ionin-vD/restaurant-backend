@@ -14,7 +14,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Table {
+public class DiningTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
