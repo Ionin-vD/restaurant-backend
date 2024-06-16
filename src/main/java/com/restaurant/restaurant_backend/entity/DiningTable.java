@@ -30,6 +30,9 @@ public class DiningTable {
     @JoinTable(name = "table_food", joinColumns = @JoinColumn(name = "table_id"), inverseJoinColumns = @JoinColumn(name = "food_id"))
     private List<Food> foods;
 
+    @NotNull
+    private String status;
+
     public Long getId() {
         return id;
     }
@@ -61,4 +64,13 @@ public class DiningTable {
     public void setNumberTable(Integer numberTable) {
         this.numberTable = numberTable;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 }
