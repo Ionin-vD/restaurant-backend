@@ -37,4 +37,8 @@ public class ClientService {
         }
         return false;
     }
+
+    public Optional<Client> getClientById(Long id) {
+        return clientRepository.findById(id);
+    }
 }
