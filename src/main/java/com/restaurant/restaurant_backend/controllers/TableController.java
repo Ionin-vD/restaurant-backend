@@ -1,5 +1,6 @@
 package com.restaurant.restaurant_backend.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,11 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.restaurant.restaurant_backend.entity.DiningTable;
+import com.restaurant.restaurant_backend.entity.Food;
 import com.restaurant.restaurant_backend.controllers.dopclass.TableBookingRequest;
 import com.restaurant.restaurant_backend.controllers.dopclass.TableUpdateRequest;
 import com.restaurant.restaurant_backend.entity.Client;
 import com.restaurant.restaurant_backend.services.ClientService;
 import com.restaurant.restaurant_backend.services.DiningTableService;
+import com.restaurant.restaurant_backend.services.FoodService;
 
 @RestController
 @RequestMapping("/table")
@@ -24,6 +27,8 @@ public class TableController {
 
     @Autowired
     private ClientService clientService;
+    @Autowired
+    private FoodService foodService;
 
     @GetMapping("/get_all")
     public List<DiningTable> getAllTable() {
@@ -98,12 +103,49 @@ public class TableController {
 
             if ("available".equals(status)) {
                 table.setClient(null);
+                table.getFoods().clear();
             }
             table.setStatus(status);
             DiningTable updatedTable = tableService.saveTable(table);
             return ResponseEntity.ok(updatedTable);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PutMapping("/add_food")
+    public ResponseEntity<DiningTable> addFoodToTable(
+            @RequestParam Long tableId,
+            @RequestBody List<Long> foodIds) {
+
+        Optional<DiningTable> tableOpt = tableService.findByIdTable(tableId);
+
+        if (tableOpt.isPresent()) {
+            DiningTable table = tableOpt.get();
+
+            // Fetch existing foods or initialize if null
+            List<Food> foods = table.getFoods();
+            if (foods == null) {
+                foods = new ArrayList<>();
+            }
+
+            // Add new food items to the list
+            for (Long foodId : foodIds) {
+                Optional<Food> foodOpt = foodService.findById(foodId);
+                if (foodOpt.isPresent()) {
+                    foods.add(foodOpt.get());
+                } else {
+                    // Handle case where foodId doesn't exist
+                    return ResponseEntity.notFound().build();
+                }
+            }
+
+            // Update the dining table with the new list of foods
+            table.setFoods(foods);
+            DiningTable updatedTable = tableService.saveTable(table);
+            return ResponseEntity.ok(updatedTable);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 

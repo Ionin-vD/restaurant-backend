@@ -1,5 +1,6 @@
 package com.restaurant.restaurant_backend.services;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,8 +50,10 @@ public class DiningTableService {
     public boolean deleteLastTable() {
         List<DiningTable> allTables = tableRepository.findAll();
         if (!allTables.isEmpty()) {
-            DiningTable lastTable = allTables.get(allTables.size() - 1);
-            if ("available".equalsIgnoreCase(lastTable.getStatus())) {
+            DiningTable lastTable = allTables.stream()
+                    .max(Comparator.comparingInt(DiningTable::getNumberTable))
+                    .orElse(null);
+            if (lastTable != null && "available".equalsIgnoreCase(lastTable.getStatus())) {
                 tableRepository.deleteById(lastTable.getId());
                 return true;
             }

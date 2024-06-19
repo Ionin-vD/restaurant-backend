@@ -22,6 +22,10 @@ public class FoodService {
         return foodRepository.save(food);
     }
 
+    public Optional<Food> findById(Long id) {
+        return foodRepository.findById(id);
+    }
+
     public Food updateFood(Food food) {
         Optional<Food> existingFood = foodRepository.findById(food.getId());
         if (existingFood.isPresent()) {
