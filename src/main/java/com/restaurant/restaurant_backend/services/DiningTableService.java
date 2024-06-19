@@ -22,6 +22,10 @@ public class DiningTableService {
         return tableRepository.findByNumberTable(numberTable);
     }
 
+    public Optional<DiningTable> findByIdTable(Long id) {
+        return tableRepository.findById(id);
+    }
+
     public DiningTable saveTable(DiningTable table) {
         return tableRepository.save(table);
     }

@@ -1,6 +1,7 @@
 package com.restaurant.restaurant_backend.controllers;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.restaurant.restaurant_backend.entity.DiningTable;
 import com.restaurant.restaurant_backend.controllers.dopclass.TableBookingRequest;
+import com.restaurant.restaurant_backend.controllers.dopclass.TableUpdateRequest;
 import com.restaurant.restaurant_backend.entity.Client;
 import com.restaurant.restaurant_backend.services.ClientService;
 import com.restaurant.restaurant_backend.services.DiningTableService;
@@ -28,9 +30,14 @@ public class TableController {
         return tableService.getAllTable();
     }
 
-    @GetMapping("/getNumber/{number}")
+    @GetMapping("/get_number/{number}")
     public DiningTable getTableNumber(@PathVariable Integer number) {
         return tableService.findByNumberTable(number).get();
+    }
+
+    @GetMapping("/get_id/{id}")
+    public DiningTable getTableId(@PathVariable Integer id) {
+        return tableService.findByIdTable(Long.valueOf(id)).get();
     }
 
     @PutMapping("/book")
@@ -57,6 +64,42 @@ public class TableController {
 
             table.setClient(client);
             table.setStatus("booked");
+            DiningTable updatedTable = tableService.saveTable(table);
+            return ResponseEntity.ok(updatedTable);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PutMapping("/cancel_book")
+    public ResponseEntity<DiningTable> cancelBookTable(@RequestBody Map<String, Integer> payload) {
+        Integer id = payload.get("id");
+        Optional<DiningTable> tableOpt = tableService.findByIdTable(Long.valueOf(id));
+        if (tableOpt.isPresent()) {
+            DiningTable table = tableOpt.get();
+
+            table.setClient(null);
+            table.setStatus("available");
+            DiningTable updatedTable = tableService.saveTable(table);
+            return ResponseEntity.ok(updatedTable);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PutMapping("/update_book")
+    public ResponseEntity<DiningTable> updateBookTable(@RequestBody TableUpdateRequest request) {
+        Long id = request.getId();
+        String status = request.getStatus();
+
+        Optional<DiningTable> tableOpt = tableService.findByIdTable(id);
+        if (tableOpt.isPresent()) {
+            DiningTable table = tableOpt.get();
+
+            if ("available".equals(status)) {
+                table.setClient(null);
+            }
+            table.setStatus(status);
             DiningTable updatedTable = tableService.saveTable(table);
             return ResponseEntity.ok(updatedTable);
         } else {
