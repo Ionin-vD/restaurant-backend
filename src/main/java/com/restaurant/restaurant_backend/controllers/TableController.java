@@ -149,6 +149,17 @@ public class TableController {
         }
     }
 
+    @GetMapping("/get_ordered_dishes/{tableId}")
+    public ResponseEntity<List<Food>> getOrderedDishes(@PathVariable Long tableId) {
+        Optional<DiningTable> tableOpt = tableService.findByIdTable(tableId);
+        if (tableOpt.isPresent()) {
+            List<Food> orderedDishes = tableOpt.get().getFoods();
+            return ResponseEntity.ok(orderedDishes);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
     @PostMapping("/add")
     public ResponseEntity<DiningTable> addTable(@RequestBody DiningTable table) {
         DiningTable addedTable = tableService.addTable(table);
