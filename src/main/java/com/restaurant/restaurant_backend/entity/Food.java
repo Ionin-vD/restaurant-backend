@@ -15,6 +15,9 @@ public class Food {
     @NotNull
     private String price;
 
+    @NotNull
+    private String description;
+
     public Long getId() {
         return id;
     }
@@ -37,5 +40,13 @@ public class Food {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

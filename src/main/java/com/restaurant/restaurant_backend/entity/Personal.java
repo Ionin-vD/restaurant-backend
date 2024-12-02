@@ -2,6 +2,7 @@ package com.restaurant.restaurant_backend.entity;
 
 import org.antlr.v4.runtime.misc.NotNull;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +18,7 @@ public class Personal {
     private String nameAndSerName;
 
     @NotNull
+    @Column(unique = true)
     private String login;
 
     @NotNull
